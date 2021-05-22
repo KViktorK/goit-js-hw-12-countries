@@ -32,7 +32,7 @@ function onSearch(e) {
 function renderCountryCard(countries) {
     if (countries.length > 10) {
         error({
-                    text: 'error',
+                    text: 'Too many matches found. Please enter a mare specific query!',
                     type: error,
                     delay: 2000
                 });
