@@ -1,11 +1,15 @@
 import API from'./js/fetchCountries.js'
 //==========================================
-import debounce from 'lodash.debounce'
+import debounce from 'lodash.debounce';
+import { error } from '@pnotify/core';
+import '@pnotify/core/dist/PNotify.css';
+import '@pnotify/core/dist/BrightTheme.css';
 //==========================================
 import cardCountrie from './template/countries.hbs'
 import countriesList from './template/countries-list.hbs'
 //==========================================
 import './scss/main.scss'
+
 
 const refs = {
     card: document.querySelector('.card'),
@@ -17,21 +21,21 @@ refs.searchForm.addEventListener('input', debounce(onSearch,1000))
 
 
 function onSearch(e) {
-    API.fetchCountryByName(e.target.value)
+    if (e.target.value.trim()) {
+        API.fetchCountryByName(e.target.value)
         .then(renderCountryCard)
-        .catch(error => console.log(error));
     
-    if (!e.target.value.trim()) {
-        clearMarkup();
-        return
-    }
-    
+ }    
 }
 
 //Рендер розметки страни
 function renderCountryCard(countries) {
     if (countries.length > 10) {
-        clearMarkup()
+        error({
+                    text: 'error',
+                    type: error,
+                    delay: 2000
+                });
     } else if (countries.length <= 10 && countries.length > 1) {
         clearMarkup()
         let markup = countriesList(countries);
@@ -43,10 +47,7 @@ function renderCountryCard(countries) {
             let markup = cardCountrie(country);
             refs.card.innerHTML = markup;
         });
-    } else {
-        clearMarkup()
-        noResult()
-    }
+    } 
 };
 
 
